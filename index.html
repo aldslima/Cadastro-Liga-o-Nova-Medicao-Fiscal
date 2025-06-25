@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro Medição Fiscal</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>CADASTRO MEDIÇÃO FISCAL</h1>
+    <div id="contadorMedidores" class="contador">MEDIDORES CADASTRADOS: 0</div>
+    <form id="cadastroForm">
+      <!-- formulário omitido para simplificar -->
+    </form>
+    <p class="message" id="mensagem"></p>
+    <h2>RELATÓRIO DE CADASTROS</h2>
+    <div class="table-container">
+      <table id="relatorioTable">
+        <thead>
+          <tr>
+            <th>MEDIDOR DO CLIENTE</th>
+            <th>VINCULAR A IN MF</th>
+            <th>POTÊNCIA LÂMPADA (W)</th>
+            <th>TIPO DE LÂMPADA</th>
+            <th>QUANTIDADE</th>
+            <th>MUNICÍPIO</th>
+            <th>ENDEREÇO</th>
+            <th>TRAFO</th>
+            <th>POSTE</th>
+            <th>NOME DO PROSPECTOR</th>
+            <th>MATRÍCULA</th>
+            <th>OBSERVAÇÃO</th>
+            <th>AÇÕES</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="button-group">
+      <button id="exportarBtn">EXPORTAR PARA EXCEL</button>
+      <button id="limparBtn">LIMPAR LISTA</button>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
