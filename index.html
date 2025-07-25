@@ -1,216 +1,577 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+<html><head><base href="https://websim.io/cadastro-medidores-lampadas/"><title>Cadastro Medição Fiscal - Ligação Nova</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+    text-transform: uppercase;
+  }
+  .container {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  h1, h2, h3 {
+    color: #333;
+    text-align: center;
+  }
+  h1 {
+    font-size: 30px;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  .form-section {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+  }
+  .form-section h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #007bff;
+  }
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -0.5rem;
+    margin-left: -0.5rem;
+  }
+  .form-col {
+    flex: 1;
+    padding: 0 0.5rem;
+    min-width: 200px;
+  }
+  input, textarea, select {
+    width: 100%;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+  .message {
+    margin-top: 1rem;
+    font-weight: bold;
+    text-align: center;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.9rem;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    text-align: left;
+  }
+  th {
+    background-color: #f2f2f2;
+    position: sticky;
+    top: 0;
+  }
+  tr:nth-child(even) {
+    background-color: #f8f8f8;
+  }
+  .table-container {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+  }
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+  #exportarBtn, #limparBtn, #whatsappBtn {
+    flex: 1;
+    margin: 0 0.5rem;
+  }
+  #limparBtn {
+    background-color: #FF0000;
+  }
+  #limparBtn:hover {
+    background-color: #CC0000;
+  }
+  #whatsappBtn {
+    background-color: #25D366; /* verde WhatsApp */
+  }
+  #whatsappBtn:hover {
+    background-color: #1ebe5d;
+  }
+  .delete-btn {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastro Medição Fiscal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: #f4f6f8;
-      color: #333;
-    }
+  .delete-btn:hover {
+    background-color: #cc0000;
+  }
+  /* Modal styles */
+  .modal-overlay {
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .modal {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    text-transform: none;
+  }
+  .modal h3 {
+    margin-top: 0;
+    text-align: center;
+  }
+  .modal label {
+    display: block;
+    margin: 10px 0 5px;
+  }
+  .modal input {
+    width: 100%;
+    padding: 8px;
+    font-size: 1rem;
+  }
+  .modal button {
+    margin-top: 15px;
+    width: 100%;
+  }
+  .modal-close {
+    margin-top: 10px;
+    background: #888;
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
+  <div class="container">
+    <h1>CADASTRO MEDIÇÃO FISCAL</h1>
+    <div id="contadorMedidores" style="text-align: center; margin-bottom: 1rem; font-weight: bold; color: green;">
+      MEDIDORES CADASTRADOS: 0
+    </div>
+    <form id="cadastroForm">
+      <div class="form-section">
+        <h3>INFORMAÇÕES DE LOCALIZAÇÃO</h3>
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label for="localInput">MUNICÍPIO:</label>
+              <input type="text" id="localInput" placeholder="EX: CIDADE" required>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label for="enderecoInput">ENDEREÇO:</label>
+              <input type="text" id="enderecoInput" placeholder="EX: RUA DAS FLORES, 123" required>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label for="trafoInput">TRAFO:</label>
+              <input type="text" id="trafoInput" placeholder="EX: TR-001" required>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label for="posteInput">POSTE:</label>
+              <input type="text" id="posteInput" placeholder="EX: P-123" required>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-section">
+        <h3>INFORMAÇÕES DO PROSPECTOR</h3>
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label for="prospectorNomeInput">NOME DO PROSPECTOR:</label>
+              <input type="text" id="prospectorNomeInput" placeholder="DIGITE O NOME COMPLETO" required>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label for="prospectorMatriculaInput">MATRÍCULA:</label>
+              <input type="text" id="prospectorMatriculaInput" placeholder="DIGITE A MATRÍCULA" required>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-section">
+        <h3>INFORMAÇÕES DO MEDIDOR</h3>
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label for="numeroInput">MEDIDOR DO CLIENTE:</label>
+              <input type="text" id="numeroInput" placeholder="DIGITE 8 A 11 CARACTERES DO MEDIDOR" maxlength="11" required>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label for="instalacaoInput">VINCULAR A IN MF:</label>
+              <input type="text" id="instalacaoInput" placeholder="9 A 10 DÍGITOS" maxlength="10" pattern="\d{9,10}" required>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-section">
+        <h3>INFORMAÇÕES DA LÂMPADA</h3>
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label for="potenciaInput">POTÊNCIA DA LÂMPADA (W):</label>
+              <input type="number" id="potenciaInput" placeholder="EX: 60" min="1">
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label for="tipoSelect">TIPO DE LÂMPADA:</label>
+              <select id="tipoSelect">
+                <option value="">SELECIONE O TIPO</option>
+                <option value="LED">LED</option>
+                <option value="FLUORESCENTE">FLUORESCENTE</option>
+                <option value="INCANDESCENTE">INCANDESCENTE</option>
+                <option value="VAPOR DE SÓDIO">VAPOR DE SÓDIO</option>
+                <option value="VAPOR METÁLICO">VAPOR METÁLICO</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label for="quantidadeInput">QUANTIDADE DE LÂMPADAS:</label>
+              <input type="number" id="quantidadeInput" placeholder="EX: 1" min="1">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="observacaoInput">OBSERVAÇÃO:</label>
+        <textarea id="observacaoInput" placeholder="OBSERVAÇÃO (OPCIONAL)" rows="3"></textarea>
+      </div>
+      
+      <button type="submit">CADASTRAR</button>
+    </form>
+    <p class="message" id="mensagem"></p>
 
-    h1 {
-      color: #2c3e50;
-      text-align: center;
-    }
-
-    .counter {
-      font-size: 20px;
-      color: green;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    form {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-
-    input, button {
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-
-    button {
-      cursor: pointer;
-      background-color: #3498db;
-      color: white;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #2980b9;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 10px;
-      text-align: left;
-    }
-
-    th {
-      background-color: #ecf0f1;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.6);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      min-width: 280px;
-    }
-
-    .modal button {
-      margin: 10px;
-    }
-
-    @media (max-width: 600px) {
-      form {
-        flex-direction: column;
-        align-items: center;
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <h1>Cadastro de Medição Fiscal</h1>
-  <div class="counter">Total de medidores: <span id="contador">0</span></div>
-
-  <form id="formulario">
-    <input type="text" id="nome" placeholder="Nome" required>
-    <input type="text" id="local" placeholder="Local" required>
-    <input type="text" id="serie" placeholder="Série" required>
-    <button type="submit">Cadastrar</button>
-  </form>
-
-  <div style="text-align:center;">
-    <button onclick="abrirModal()">Exportar para Excel</button>
-    <button onclick="limparTabela()">Limpar Lista</button>
+    <h2>RELATÓRIO DE CADASTROS</h2>
+    <div class="table-container">
+      <table id="relatorioTable">
+        <thead>
+          <tr>
+            <th style="width: 10%;">MEDIDOR DO CLIENTE</th>
+            <th style="width: 10%;">VINCULAR A IN MF</th>
+            <th style="width: 8%;">POTÊNCIA LÂMPADA (W)</th>
+            <th style="width: 10%;">TIPO DE LÂMPADA</th>
+            <th style="width: 8%;">QUANTIDADE</th>
+            <th style="width: 12%;">MUNICÍPIO</th>
+            <th style="width: 12%;">ENDEREÇO</th>
+            <th style="width: 8%;">TRAFO</th>
+            <th style="width: 8%;">POSTE</th>
+            <th style="width: 12%;">NOME DO PROSPECTOR</th>
+            <th style="width: 10%;">MATRÍCULA</th>
+            <th style="width: 14%;">OBSERVAÇÃO</th>
+            <th style="width: 8%;">AÇÕES</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="button-group">
+      <button id="exportarBtn">EXPORTAR PARA EXCEL</button>
+      <button id="limparBtn">LIMPAR LISTA</button>
+    </div>
   </div>
 
-  <table id="tabela">
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th>Local</th>
-        <th>Série</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-  <div id="modal" class="modal" onclick="fecharModal(event)">
-    <div class="modal-content">
-      <h2>Exportar Relatório</h2>
-      <button onclick="exportarExcel()">Baixar Excel</button>
-      <button onclick="enviarWhatsApp()">Enviar via WhatsApp</button>
-      <br>
-      <button onclick="document.getElementById('modal').style.display='none'">Fechar</button>
+  <!-- Modal para escolha entre baixar ou whatsapp -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h3>EXPORTAR CADASTROS</h3>
+      <label for="whatsappNumber">Número para WhatsApp (somente dígitos, ex: 5511999998888):</label>
+      <input type="tel" id="whatsappNumber" placeholder="Digite o número com DDD">
+      <button id="btnDownloadExcel">Baixar Arquivo Excel</button>
+      <button id="btnSendWhatsApp">Enviar via WhatsApp</button>
+      <button class="modal-close" id="btnCloseModal">Cancelar</button>
     </div>
   </div>
 
   <script>
-    const formulario = document.getElementById("formulario");
-    const tabela = document.getElementById("tabela").getElementsByTagName("tbody")[0];
-    const contador = document.getElementById("contador");
+    let cadastros = [];
+    let ultimaInstalacao = '';
+    let savedLocal = '';
+    let savedEndereco = '';
+    let savedTrafo = '';
+    let savedPoste = '';
+    let savedProspectorNome = '';
+    let savedProspectorMatricula = '';
 
-    formulario.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const nome = document.getElementById("nome").value.trim();
-      const local = document.getElementById("local").value.trim();
-      const serie = document.getElementById("serie").value.trim();
+    // Utilitário para converter string para ArrayBuffer (XLSX)
+    function s2ab(s) {
+      const buf = new ArrayBuffer(s.length);
+      const view = new Uint8Array(buf);
+      for (let i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+      return buf;
+    }
 
-      if (!nome || !local || !serie) return;
+    // Gera o arquivo Excel e retorna o blob + binário
+    function gerarExcelBlob() {
+      const formattedData = cadastros.map(item => {
+        const baseData = {
+          'MEDIDOR DO CLIENTE': item.numero,
+          'VINCULAR A IN MF': item.instalacao,
+          'MUNICÍPIO': item.local,
+          'ENDEREÇO': item.endereco,
+          'TRAFO': item.trafo,
+          'POSTE': item.poste,
+          'NOME DO PROSPECTOR': item.prospectorNome,
+          'MATRÍCULA': item.prospectorMatricula,
+          'OBSERVAÇÃO': item.observacao
+        };
 
-      const novaLinha = tabela.insertRow();
-      novaLinha.insertCell().textContent = nome;
-      novaLinha.insertCell().textContent = local;
-      novaLinha.insertCell().textContent = serie;
+        if (item.potencia || item.tipo || item.quantidade) {
+          baseData['POTÊNCIA LÂMPADA (W)'] = item.potencia;
+          baseData['TIPO DE LÂMPADA'] = item.tipo;
+          baseData['QUANTIDADE'] = item.quantidade;
+        }
+        return baseData;
+      });
 
-      formulario.reset();
-      atualizarContador();
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(formattedData);
+      XLSX.utils.book_append_sheet(wb, ws, "Cadastros");
+      const wbout = XLSX.write(wb, {bookType:'xlsx', type:'binary'});
+      const blob = new Blob([s2ab(wbout)], {type:"application/octet-stream"});
+      return { blob, wbout };
+    }
+
+    window.addEventListener('load', function() {
+      const cadastrosSalvos = localStorage.getItem('cadastrosMedidoresLampadas');
+      if (cadastrosSalvos) {
+        cadastros = JSON.parse(cadastrosSalvos);
+        atualizarTabela();
+        if (cadastros.length > 0) {
+          ultimaInstalacao = cadastros[cadastros.length - 1].instalacao;
+          document.getElementById('instalacaoInput').value = ultimaInstalacao;
+          const lastCadastro = cadastros[cadastros.length - 1];
+          savedLocal = lastCadastro.local;
+          savedEndereco = lastCadastro.endereco;
+          savedTrafo = lastCadastro.trafo;
+          savedPoste = lastCadastro.poste;
+          savedProspectorNome = lastCadastro.prospectorNome;
+          savedProspectorMatricula = lastCadastro.prospectorMatricula;
+          fillSavedValues();
+        }
+      }
     });
 
-    function atualizarContador() {
-      contador.textContent = tabela.rows.length;
-    }
-
-    function limparTabela() {
-      tabela.innerHTML = "";
-      atualizarContador();
-    }
-
-    function abrirModal() {
-      document.getElementById("modal").style.display = "flex";
-    }
-
-    function fecharModal(event) {
-      if (event.target.id === "modal") {
-        document.getElementById("modal").style.display = "none";
-      }
-    }
-
-    function exportarExcel() {
-      const wb = XLSX.utils.book_new();
-      const ws_data = [["Nome", "Local", "Série"]];
-
-      for (let i = 0; i < tabela.rows.length; i++) {
-        const row = tabela.rows[i];
-        const rowData = [
-          row.cells[0].textContent,
-          row.cells[1].textContent,
-          row.cells[2].textContent,
-        ];
-        ws_data.push(rowData);
+    document.getElementById('cadastroForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const numero = document.getElementById('numeroInput').value.toUpperCase();
+      const instalacao = document.getElementById('instalacaoInput').value;
+      const potencia = document.getElementById('potenciaInput').value || '';
+      const tipo = document.getElementById('tipoSelect').value || '';
+      const quantidade = document.getElementById('quantidadeInput').value || '';
+      const local = document.getElementById('localInput').value;
+      const endereco = document.getElementById('enderecoInput').value;
+      const trafo = document.getElementById('trafoInput').value;
+      const poste = document.getElementById('posteInput').value;
+      const observacao = document.getElementById('observacaoInput').value;
+      const prospectorNome = document.getElementById('prospectorNomeInput').value;
+      const prospectorMatricula = document.getElementById('prospectorMatriculaInput').value;
+      const mensagem = document.getElementById('mensagem');
+      
+      if (!prospectorNome || !prospectorMatricula) {
+        mensagem.style.color = 'red';
+        mensagem.textContent = 'NOME E MATRÍCULA DO PROSPECTOR SÃO OBRIGATÓRIOS!';
+        return;
       }
 
-      const ws = XLSX.utils.aoa_to_sheet(ws_data);
-      XLSX.utils.book_append_sheet(wb, ws, "Medidores");
-      XLSX.writeFile(wb, "medidores.xlsx");
-      document.getElementById("modal").style.display = "none";
+      if (numero.length >= 8 && numero.length <= 11 && instalacao.match(/^\d{9,10}$/)) {
+        if (cadastros.some(c => c.numero === numero)) {
+          mensagem.style.color = 'red';
+          mensagem.textContent = 'MEDIDOR JÁ CADASTRADO!';
+          return;
+        }
+        cadastros.push({
+          numero,
+          instalacao,
+          potencia,
+          tipo,
+          quantidade,
+          local,
+          endereco,
+          trafo,
+          poste,
+          observacao,
+          prospectorNome,
+          prospectorMatricula
+        });
+        ultimaInstalacao = instalacao;
+        savedLocal = local;
+        savedEndereco = endereco;
+        savedTrafo = trafo;
+        savedPoste = poste;
+        savedProspectorNome = prospectorNome;
+        savedProspectorMatricula = prospectorMatricula;
+        localStorage.setItem('cadastrosMedidoresLampadas', JSON.stringify(cadastros));
+        atualizarTabela();
+        limparFormulario();
+        mensagem.style.color = 'green';
+        mensagem.textContent = 'CADASTRO EFETUADO COM SUCESSO!';
+        fillSavedValues();
+      } else {
+        mensagem.style.color = 'red';
+        mensagem.textContent = 'VERIFIQUE OS DADOS DO MEDIDOR E INSTALAÇÃO!';
+      }
+    });
+
+    function fillSavedValues() {
+      document.getElementById('localInput').value = savedLocal;
+      document.getElementById('enderecoInput').value = savedEndereco;
+      document.getElementById('trafoInput').value = savedTrafo;
+      document.getElementById('posteInput').value = savedPoste;
+      document.getElementById('prospectorNomeInput').value = savedProspectorNome;
+      document.getElementById('prospectorMatriculaInput').value = savedProspectorMatricula;
+      document.getElementById('instalacaoInput').value = ultimaInstalacao;
     }
 
-    function enviarWhatsApp() {
-      let texto = "Segue o relatório de medidores:%0A";
-      for (let i = 0; i < tabela.rows.length; i++) {
-        const row = tabela.rows[i];
-        texto += `- ${row.cells[0].textContent}, ${row.cells[1].textContent}, ${row.cells[2].textContent}%0A`;
-      }
-      const url = `https://wa.me/?text=${texto}`;
-      window.open(url, '_blank');
+    function limparFormulario() {
+      document.getElementById('numeroInput').value = '';
+      document.getElementById('potenciaInput').value = '';
+      document.getElementById('tipoSelect').value = '';
+      document.getElementById('quantidadeInput').value = '';
+      document.getElementById('observacaoInput').value = '';
     }
+
+    function atualizarTabela() {
+      const tbody = document.querySelector('#relatorioTable tbody');
+      tbody.innerHTML = '';
+      cadastros.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.numero}</td>
+          <td>${item.instalacao}</td>
+          <td>${item.potencia || ''}</td>
+          <td>${item.tipo || ''}</td>
+          <td>${item.quantidade || ''}</td>
+          <td>${item.local}</td>
+          <td>${item.endereco}</td>
+          <td>${item.trafo}</td>
+          <td>${item.poste}</td>
+          <td>${item.prospectorNome}</td>
+          <td>${item.prospectorMatricula}</td>
+          <td>${item.observacao || ''}</td>
+          <td><button class="delete-btn" data-index="${index}">Excluir</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('contadorMedidores').textContent = `MEDIDORES CADASTRADOS: ${cadastros.length}`;
+
+      // Excluir item
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const idx = e.target.getAttribute('data-index');
+          cadastros.splice(idx, 1);
+          localStorage.setItem('cadastrosMedidoresLampadas', JSON.stringify(cadastros));
+          atualizarTabela();
+        });
+      });
+    }
+
+    // LIMPAR LISTA
+    document.getElementById('limparBtn').addEventListener('click', () => {
+      if (confirm('Deseja realmente limpar toda a lista?')) {
+        cadastros = [];
+        localStorage.removeItem('cadastrosMedidoresLampadas');
+        atualizarTabela();
+        document.getElementById('mensagem').textContent = '';
+      }
+    });
+
+    // EXPORTAR botão - abrir modal
+    document.getElementById('exportarBtn').addEventListener('click', () => {
+      if (cadastros.length === 0) {
+        alert('Nenhum cadastro para exportar.');
+        return;
+      }
+      // Abrir modal
+      document.getElementById('modalOverlay').style.display = 'flex';
+      document.getElementById('whatsappNumber').value = '';
+    });
+
+    // FECHAR modal
+    document.getElementById('btnCloseModal').addEventListener('click', () => {
+      document.getElementById('modalOverlay').style.display = 'none';
+    });
+
+    // DOWNLOAD Excel
+    document.getElementById('btnDownloadExcel').addEventListener('click', () => {
+      const {blob} = gerarExcelBlob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'cadastros_medidores_lampadas.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      document.getElementById('modalOverlay').style.display = 'none';
+    });
+
+    // ENVIAR via WhatsApp
+    document.getElementById('btnSendWhatsApp').addEventListener('click', () => {
+      const numero = document.getElementById('whatsappNumber').value.trim();
+      if (!numero.match(/^\d{10,15}$/)) {
+        alert('Digite um número válido com DDD, somente números, ex: 5511999998888');
+        return;
+      }
+      // Montar mensagem simples com resumo dos cadastros
+      let mensagem = 'Cadastros de Medidores e Lâmpadas:%0A';
+      cadastros.forEach((item, i) => {
+        mensagem += `${i+1}. Medidor: ${item.numero}, Instalação: ${item.instalacao}, Município: ${item.local}, Endereço: ${item.endereco}%0A`;
+      });
+      mensagem += '%0AEnviado via sistema de cadastro.';
+
+      // Abrir WhatsApp Web ou App no celular
+      const urlWhatsapp = `https://api.whatsapp.com/send?phone=${numero}&text=${mensagem}`;
+      window.open(urlWhatsapp, '_blank');
+
+      document.getElementById('modalOverlay').style.display = 'none';
+    });
   </script>
-</body>
-
-</html>
+</body></html>
