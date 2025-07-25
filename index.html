@@ -569,7 +569,7 @@
       mensagemWhatsapp += `TOTAL DE CADASTROS: ${cadastros.length}`;
 
       const textoCodificado = encodeURIComponent(mensagemWhatsapp);
-      const urlWhatsapp = `https://web.whatsapp.com/send?text=${textoCodificado}`;
+      const urlWhatsapp = `https://api.whatsapp.com/send?text=${textoCodificado}`;
       window.open(urlWhatsapp, '_blank');
 
       document.getElementById('mensagem').style.color = 'green';
